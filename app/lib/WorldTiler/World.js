@@ -2,8 +2,9 @@
  * A utility class for an IsoSphere that converts points into hexagons.
  * @param bottle {Bottle}
  */
-let kdt = require('kd-tree-javascript');
-export default (bottle) => bottle.factory('World', (container) => class World {
+const kdt = require('kd-tree-javascript');
+const _ = require('lodash');
+module.exports =  (bottle) => bottle.factory('World', (container) => class World {
 
   /**
    *
@@ -54,7 +55,6 @@ export default (bottle) => bottle.factory('World', (container) => class World {
   }
 
   indexNearPoints () {
-    console.log('indexed');
     this._nearPointIndex = new kdt.kdTree(Array.from(this.points.values()), (a, b) => {
       return b.distanceToSquared(a);
     }, ['x', 'y', 'z']);
@@ -67,5 +67,35 @@ export default (bottle) => bottle.factory('World', (container) => class World {
         neighbor.paintHex(alpha / 2, hexGridShape, size);
       }
     }
+  }
+
+  data(size=100) {
+    let hexes = Array.from(this.points.values()).reduce((data, pt) => {
+      data[pt.vertexIndex] = {
+        center: pt.vertex.toArray(),
+        corners: pt.getHexPoints().map((p) => p.toArray()),
+        uvs: pt.getHexWedges(size),
+      };
+      return data;
+    }, {});
+
+    let edges = [];
+
+    for (let p of this.points.values()) {
+      p.getHexEdges(edges, size);
+    }
+
+    let delta = size / 10000;
+
+    edges = _.uniqBy(edges, (edge) => {
+      return _(edge).sortBy().map((coords) => coords.map((coord) => parseFloat(coord).toFixed(3))).flattenDeep().join(',');
+    });
+
+    return {hexes, edges}
+  }
+
+  static fromIso(radius = 1, recurse = 0) {
+      const geo = new container.IcosahedronGeometry(radius, recurse);
+      return new World(geo);
   }
 });

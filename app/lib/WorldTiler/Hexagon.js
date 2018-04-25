@@ -1,7 +1,7 @@
-import _ from "lodash";
-import {Vector2} from "three";
+const _ = require('lodash');
+const {Vector2} = require('three');
 
-export default (bottle) => {
+module.exports =  (bottle) => {
 
   bottle.factory('Zone2dSet', (container) => class ZoneSet {
     constructor (size) {

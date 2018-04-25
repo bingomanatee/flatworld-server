@@ -1,6 +1,6 @@
-import _ from "lodash";
+const _ = require('lodash');
 
-export default (bottle) => bottle.factory('PointNode', (container) => class PointNode extends container.PathNode {
+module.exports =  (bottle) => bottle.factory('PointNode', (container) => class PointNode extends container.PathNode {
   constructor (point, nodeMap) {
     super(point.vertexIndex, point, nodeMap);
   }

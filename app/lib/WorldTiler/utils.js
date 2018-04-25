@@ -1,7 +1,7 @@
-import {Vector2, Vector3} from 'three';
+const {Vector2, Vector3, IcosahedronGeometry} = require('three');
 
-import tinyGradient from 'tinygradient';
-import tinyColor from 'tinycolor2';
+const tinyGradient = require('tinygradient');
+const tinyColor = require('tinycolor2');
 
 /**
  * converts a XYZ vector3 to longitude latitude (Direct Polar)
@@ -130,14 +130,16 @@ function locateCamera (target, camera, camera_angle, camera_distance) {
 
 }
 
-export default (bottle) => {
+module.exports =  (bottle) => {
   bottle.constant('Vector2', Vector2);
   bottle.constant('Vector3', Vector3);
+  bottle.constant('IcosahedronGeometry', IcosahedronGeometry);
+
   bottle.constant('floatToString', (n) => Number.parseFloat(n)
                                                 .toFixed(3));
   bottle.constant('numSort', (array) => array.sort((a, b) => a - b));
   bottle.constant('percent', (n) => `${Number.parseFloat(n * 100)
-                                             .toFixed(1)}%`)
+                                             .toFixed(1)}%`);
   bottle.constant('setsEqual', function setsEqual (s1, s2) {
     if (s1.size !== s2.size) {
       return false;
@@ -151,19 +153,17 @@ export default (bottle) => {
     return true;
   });
 
-  bottle.factory('pointToUvVertex', () => (point, size) => point.meanUv.clone()
+  bottle.constant('pointToUvVertex',  (point, size) => point.meanUv.clone()
                                                                 .multiplyScalar(size));
 
-  bottle.factory('uvToCanvas', () => (uv, size) => {
+  bottle.constant('uvToCanvas',  (uv, size) => {
     uv = uv.clone()
            .multiplyScalar(size);
     uv.y = size - uv.y;
     return uv;
   });
 
-  bottle.factory('globeGradient', () => {
-
-    return tinyGradient([
+  bottle.constant('globeGradient', tinyGradient([
 
       {color: tinyColor({r: 204, g: 125, b: 0, a: 0}), pos: 0},
       {color: tinyColor({r: 204, g: 187, b: 0, a: 1}), pos: 0.1},
@@ -173,16 +173,13 @@ export default (bottle) => {
       {
         color: tinyColor({r: 255, g: 235, b: 204})
           .toString(), pos: 1
-      }
+      }]));
 
-    ]);
-
-  })
-
-  bottle.factory('time', () => (fn, msg) => {
+  bottle.constant('time',  (fn, msg) => {
     let time = new Date().getTime();
     fn();
     console.log(msg, (new Date().getTime() - time) / 1000);
-  })
-  bottle.factory('pointToLatLon', () => (container) => (pt) => vector3toLonLat(pt, container.Vector2))
+  });
+
+  bottle.factory('pointToLatLon',  (container) => (pt) => vector3toLonLat(pt, container.Vector2))
 }

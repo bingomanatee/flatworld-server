@@ -1,7 +1,6 @@
-import _ from "lodash";
-import {Vector2} from "three";
+const _ = require('lodash');
 
-export default (bottle) => {
+module.exports =  (bottle) => {
   bottle.factory('PathNode', (container) =>
     class PathNode {
       constructor(identity, coordinate, registry = null) {

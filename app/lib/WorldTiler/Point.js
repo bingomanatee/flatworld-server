@@ -1,5 +1,5 @@
-import _ from 'lodash'
-import {Vector2} from 'three';
+const _ = require('lodash');
+const {Vector2} = require('three');
 
 
 /**
@@ -7,7 +7,7 @@ import {Vector2} from 'three';
  *
  * @param bottle {Bottle}
  */
-export default (bottle) => bottle.factory('Point', (container) => class Point extends container.WorldElement {
+module.exports =  (bottle) => bottle.factory('Point', (container) => class Point extends container.WorldElement {
 
   /**
    *
@@ -89,6 +89,12 @@ export default (bottle) => bottle.factory('Point', (container) => class Point ex
     return this._neighborRing;
   }
 
+  getHexPoints() {
+    let ring = this.neighborRing;
+    return ring.map((point) => point.vertex.clone()
+      .lerp(this.vertex, 0.5));
+  }
+
   neighborFaceNodes () {
     let nodeMap = new Map();
     let nodes = Array.from(this.pointIsoFaces.values())
@@ -120,6 +126,12 @@ export default (bottle) => bottle.factory('Point', (container) => class Point ex
     }
   }
 
+  getHexEdges (edges, size) {
+    for (let faceNode of this.faceRing) {
+      faceNode.getHexEdges(edges, size);
+    }
+  }
+
   distanceToSquared (p) {
     return this.vertex.distanceToSquared(p);
   }
@@ -146,6 +158,14 @@ export default (bottle) => bottle.factory('Point', (container) => class Point ex
     stage.add(this._canvasHex);
   }
 
+  getHexWedges(size=100) {
+    let wedgePoints = [];
+    for (let faceNode of this.faceRing) {
+      faceNode.addHexWedge(wedgePoints, this, size);
+    }
+    return _.compact(wedgePoints);
+  }
+
   /**
    * paints or increases the hexagon with increased Alpha
    *
@@ -154,7 +174,7 @@ export default (bottle) => bottle.factory('Point', (container) => class Point ex
    * @param size
    * @returns {boolean}
    */
-  paintHex (alpha, stage, size) {
+  paintHex (alpha, stage, size ) {
     if (!this._canvasHex) {
       this.initCanvasHex(alpha, stage, size);
       return true;

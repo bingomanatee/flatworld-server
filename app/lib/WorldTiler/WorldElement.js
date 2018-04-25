@@ -3,7 +3,7 @@
  */
 
 
-export default (bottle) => bottle.factory('WorldElement', (container) => class WorldElement {
+module.exports =  (bottle) => bottle.factory('WorldElement', (container) => class WorldElement {
 
   /**
    *

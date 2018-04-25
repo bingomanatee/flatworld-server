@@ -5,7 +5,7 @@
 // Load APM on production environment
 const config = require('./config');
 const apm = require('./apm');
-
+const serve = require('koa-static');
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const cors = require('kcors');
@@ -41,6 +41,7 @@ app.use(
 app.use(responseHandler());
 app.use(errorHandler());
 app.use(logMiddleware({ logger }));
+app.use(serve(__dirname + '/lib/worldSnapshots'))
 
 // Bootstrap application router
 app.use(router.routes());

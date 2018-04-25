@@ -1,6 +1,6 @@
-import _ from "lodash";
+const _ = require('lodash');
 
-export default (bottle) => bottle.factory('IsoFace', (container) => class IsoFace extends container.WorldElement {
+module.exports =  (bottle) => bottle.factory('IsoFace', (container) => class IsoFace extends container.WorldElement {
 
   /**
    * a utility class that wraps a THREE face in utility methods

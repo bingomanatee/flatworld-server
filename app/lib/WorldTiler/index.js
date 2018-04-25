@@ -1,19 +1,18 @@
+const Bottle = require('bottlejs');
+const WorldElement = require('./WorldElement');
+const IsoFace = require('./IsoFace');
+const FaceEdge = require('./FaceEdge');
+const World = require('./World');
+const Point = require('./Point');
+const FaceNode = require('./FaceNode');
+const PathNode = require('./PathNode');
+const PointNode = require('./PointNode');
+const utils = require('./utils');
+const {fabric}  = require('fabric');
 
-import Bottle from 'bottlejs';
-import WorldElement from './WorldElement';
-import IsoFace from './IsoFace';
-import FaceEdge from './FaceEdge';
-import World from './World';
-import Point from './Point';
-import FaceNode from './FaceNode';
-import PathNode from './PathNode';
-import PointNode from './PointNode';
-import utils from './utils';
-import {fabric}  from 'fabric';
-
-export default () => {
+module.exports =  () => {
   let bottle = new Bottle();
-  bottle.factory('fabric', () => fabric);
+  bottle.constant('fabric', fabric);
 
   WorldElement(bottle);
   World(bottle);
@@ -24,7 +23,6 @@ export default () => {
   PointNode(bottle);
   PathNode(bottle);
   utils(bottle);
-
 
   return bottle;
 }

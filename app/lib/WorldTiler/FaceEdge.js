@@ -1,10 +1,10 @@
-import _ from 'lodash';
+const _ = require('lodash');
 
 /**
  * a utility class to arrange faces in order around shared edges
  */
 
-export default (bottle) => bottle.factory('FaceEdge', (container) => class FaceEdge extends container.WorldElement {
+module.exports =  (bottle) => bottle.factory('FaceEdge', (container) => class FaceEdge extends container.WorldElement {
   constructor(indexA, indexB, world) {
     super(world);
     this.orderedIndexes = FaceEdge.order(indexA, indexB);

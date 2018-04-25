@@ -1,6 +1,6 @@
-import _ from "lodash";
+const _ = require('lodash');
 
-export default (bottle) => bottle.factory('FaceNode', (container) => class PointNode extends container.PathNode {
+module.exports =  (bottle) => bottle.factory('FaceNode', (container) => class PointNode extends container.PathNode {
   constructor(point, face, nodeMap) {
     super(face.faceIndex, face.meanUv, nodeMap);
     this.point = point;
@@ -43,6 +43,19 @@ export default (bottle) => bottle.factory('FaceNode', (container) => class Point
     }
   }
 
+  getHexEdges(edges, size) {
+    let meanPointUv = this.face.meanUv.clone().multiplyScalar(size);
+    for (let edge of this.face.faceEdges) {
+      if (edge.hasPoint(this.point)) {
+        let faceVertexIndexes = edge.orderedIndexes.map((vi) => this.face.faceVertexIndexes.indexOf(vi));
+        let midpointUvs = faceVertexIndexes.map((index) => this.face.myFaceUvs[index]);
+        let midPointUv = midpointUvs[0].clone().lerp(midpointUvs[1], 0.5).multiplyScalar(size);
+        let points = [meanPointUv, midPointUv];
+        edges.push(points.map((p) => p.toArray()))
+      }
+    }
+  }
+
   addHexWedge(points, point, size) {
     let meanPointUv = container.uvToCanvas(this.face.meanUv, size);
     let pointIndex = this.face.faceVertexIndexes.indexOf(point.vertexIndex);
@@ -57,6 +70,23 @@ export default (bottle) => bottle.factory('FaceNode', (container) => class Point
         points.push('L', meanPointUv.x, ',', meanPointUv.y);
         points.push('L', midPointUv.x, ',', midPointUv.y);
         points.push('L', cornerUv.x, ',', cornerUv.y);
+      }
+    }
+  }
+
+
+  getHexWedge(points, point, size) {
+    let meanPointUv = container.uvToCanvas(this.face.meanUv, size);
+    let pointIndex = this.face.faceVertexIndexes.indexOf(point.vertexIndex);
+    let cornerUv = container.uvToCanvas(this.face.myFaceUvs[pointIndex], size);
+    const mpa = meanPointUv.toArray();
+
+    for (let edge of this.face.faceEdges) {
+      if (edge.hasPoint(this.point)) {
+        let faceVertexIndexes = edge.orderedIndexes.map((vi) => this.face.faceVertexIndexes.indexOf(vi));
+        let midpointUvs = faceVertexIndexes.map((index) => this.face.myFaceUvs[index]);
+        let midPointUv = container.uvToCanvas(midpointUvs[0].clone().lerp(midpointUvs[1], 0.5), size);
+        points.push(cornerUv.toArray(), mpa, midPointUv.toArray());
       }
     }
   }
