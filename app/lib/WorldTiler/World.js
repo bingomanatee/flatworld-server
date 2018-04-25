@@ -72,9 +72,10 @@ module.exports =  (bottle) => bottle.factory('World', (container) => class World
   data(size=100) {
     let hexes = Array.from(this.points.values()).reduce((data, pt) => {
       data[pt.vertexIndex] = {
+        id: pt.vertexIndex,
         center: pt.vertex.toArray(),
         corners: pt.getHexPoints().map((p) => p.toArray()),
-        uvs: pt.getHexWedges(size),
+        uvs: pt.getHexWedgeUV(size),
       };
       return data;
     }, {});

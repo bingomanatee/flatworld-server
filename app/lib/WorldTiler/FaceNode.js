@@ -86,7 +86,7 @@ module.exports =  (bottle) => bottle.factory('FaceNode', (container) => class Po
         let faceVertexIndexes = edge.orderedIndexes.map((vi) => this.face.faceVertexIndexes.indexOf(vi));
         let midpointUvs = faceVertexIndexes.map((index) => this.face.myFaceUvs[index]);
         let midPointUv = container.uvToCanvas(midpointUvs[0].clone().lerp(midpointUvs[1], 0.5), size);
-        points.push(cornerUv.toArray(), mpa, midPointUv.toArray());
+        points.push([cornerUv.toArray(), mpa, midPointUv.toArray()]);
       }
     }
   }

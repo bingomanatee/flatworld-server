@@ -158,12 +158,30 @@ module.exports =  (bottle) => bottle.factory('Point', (container) => class Point
     stage.add(this._canvasHex);
   }
 
-  getHexWedges(size=100) {
+  getHexWedgeUV(size = 100) {
     let wedgePoints = [];
     for (let faceNode of this.faceRing) {
-      faceNode.addHexWedge(wedgePoints, this, size);
+      faceNode.getHexWedge(wedgePoints, this, size);
     }
-    return _.compact(wedgePoints);
+    /**
+     * because there seems to be "gaps" between the wedges we push points away from their center slightly.
+     */
+    return wedgePoints .map((pointSet) => {
+      let points = pointSet.map((c) => new container.Vector2(c[0], c[1]));
+      let average = points[0].clone();
+      for (let other of points.slice(1)) {
+        average.add(other);
+      }
+
+      average.divideScalar(points.length);
+
+      for (let point of points) {
+        point.lerp(average, -0.01);
+      }
+
+      let out =  points.map((p) => p.toArray());
+      return out;
+    });
   }
 
   /**

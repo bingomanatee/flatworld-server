@@ -42,6 +42,7 @@
   "dependencies": {
     "bottlejs": "^1.7.0",
     "bunyan": "^1.8.12",
+    "canvas": "^2.0.0-alpha.12",
     "dotenv": "^5.0.1",
     "elastic-apm-node": "^1.2.1",
     "fabric": "^2.2.3",
