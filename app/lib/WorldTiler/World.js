@@ -4,7 +4,9 @@
  */
 const kdt = require('kd-tree-javascript');
 const _ = require('lodash');
-module.exports =  (bottle) => bottle.factory('World', (container) => class World {
+const iterator = require('object-recursive-iterator');
+
+module.exports = (bottle) => bottle.factory('World', (container) => class World {
 
   /**
    *
@@ -60,7 +62,7 @@ module.exports =  (bottle) => bottle.factory('World', (container) => class World
     }, ['x', 'y', 'z']);
   }
 
-   paintHex(point, alpha, hexGridShape, size) {
+  paintHex (point, alpha, hexGridShape, size) {
     let nearest = this.nearestPoint(point, 4);
     if (nearest && nearest.paintHex(alpha, hexGridShape, size)) {
       for (let neighbor of nearest.neighborRing) {
@@ -69,16 +71,19 @@ module.exports =  (bottle) => bottle.factory('World', (container) => class World
     }
   }
 
-  data(size=100) {
-    let hexes = Array.from(this.points.values()).reduce((data, pt) => {
-      data[pt.vertexIndex] = {
-        id: pt.vertexIndex,
-        center: pt.vertex.toArray(),
-        corners: pt.getHexPoints().map((p) => p.toArray()),
-        uvs: pt.getHexWedgeUV(size),
-      };
-      return data;
-    }, {});
+  data (size = 100, fixedPlaces = 3) {
+    let hexes = Array.from(this.points.values())
+                     .reduce((data, pt) => {
+                       data[pt.vertexIndex] = {
+                         id: pt.vertexIndex,
+                         center: pt.vertex.toArray(),
+                         corners: pt.getHexPoints()
+                                    .map((p) => p.toArray()),
+                         uvs: pt.getHexWedgeUV(size),
+                         neighbors: pt.neighborRing.map((point) => point.vertexIndex)
+                       };
+                       return data;
+                     }, {});
 
     let edges = [];
 
@@ -89,14 +94,32 @@ module.exports =  (bottle) => bottle.factory('World', (container) => class World
     let delta = size / 10000;
 
     edges = _.uniqBy(edges, (edge) => {
-      return _(edge).sortBy().map((coords) => coords.map((coord) => parseFloat(coord).toFixed(3))).flattenDeep().join(',');
+      return _(edge)
+        .sortBy()
+        .map((coords) => coords.map((coord) => parseFloat(coord)
+          .toFixed(3)))
+        .flattenDeep()
+        .join(',');
     });
 
-    return {hexes, edges}
+    let data = {hexes, edges};
+
+    iterator.forAll(data, (path, key, obj) => {
+      let value = obj[key];
+
+      if (_.isNumber(value) && (value !== Math.floor(value))) {
+        if (Math.abs(value) > 1) {
+          obj[key] = Number.parseFloat(value.toFixed(fixedPlaces));
+        } else {
+          obj[key] = Number.parseFloat(value.toFixed(fixedPlaces * 2));
+        }
+      }
+    });
+    return data;
   }
 
-  static fromIso(radius = 1, recurse = 0) {
-      const geo = new container.IcosahedronGeometry(radius, recurse);
-      return new World(geo);
+  static fromIso (radius = 1, recurse = 0) {
+    const geo = new container.IcosahedronGeometry(radius, recurse);
+    return new World(geo);
   }
 });

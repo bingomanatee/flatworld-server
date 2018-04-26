@@ -1,4 +1,3 @@
-const {fabric} = require('fabric');
 const tinyGradient = require('tinygradient');
 const tinyColor = require('tinycolor2');
 const {createCanvas, loadImage} = require('canvas')

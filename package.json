@@ -52,6 +52,7 @@
     "koa-bodyparser": "^4.2.0",
     "koa-router": "^7.4.0",
     "koa-static": "^4.0.2",
+    "object-recursive-iterator": "^1.0.2",
     "swagger-jsdoc": "^1.9.7",
     "three": "^0.92.0",
     "tinycolor2": "^1.4.1",
