@@ -8,5 +8,5 @@ const router = new Router();
 router.get('/', homeController.welcome);
 router.get('/spec', homeController.showSwaggerSpec);
 router.get('/rando', randoController.rando);
-router.get('/noise/:resolution/:word', randoController.noise);
+router.get('/noise/:resolution/:word/:zoom', randoController.noise);
 module.exports = router;

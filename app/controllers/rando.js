@@ -24,6 +24,9 @@ exports.rando = async (ctx) => {
 exports.noise = async (ctx) => {
   ctx.assert(ctx.params.resolution);
   ctx.assert(ctx.params.word);
+  ctx.assert(ctx.params.zoom);
+  const zoom = parseFloat(ctx.params.zoom);
+  ctx.assert(!isNaN(zoom) && zoom);
 
   let data;
   try {
@@ -51,10 +54,10 @@ exports.noise = async (ctx) => {
   let out = {}
   for (let index in data.hexes) {
     let hex = data.hexes[index];
-    let [x, y, z] = hex.center;
+    let [x, y, z] = hex.center.map(n => n * zoom);
     let value = Math.max(0, sn.noise3D(x, y, z));
     out[index] = new Number(value.toFixed(6));
   }
 
   ctx.body = out;
-}
+};
