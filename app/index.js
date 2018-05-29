@@ -16,8 +16,13 @@ const requestId = require('./middlewares/requestId');
 const responseHandler = require('./middlewares/responseHandler');
 const router = require('./routes');
 
+const bottleFactory = require('./lib/model');
 
 const app = new Koa();
+
+// model
+
+app.context.modelBottle = bottleFactory();
 
 // Trust proxy
 app.proxy = true;
@@ -50,7 +55,7 @@ app.use(router.allowedMethods());
 function onError(err) {
   if (apm.active)
     apm.captureError(err);
-  logger.error({ err, event: 'error' }, 'Unhandled exception occured');
+  logger.error({ err, event: 'error' }, 'Unhandled exception occurred');
 }
 
 // Handle uncaught errors
