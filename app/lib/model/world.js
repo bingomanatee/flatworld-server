@@ -11,7 +11,7 @@ module.exports = (bottle) => {
       const id = uuidv1();
       const {config, data} = worldData;
 
-      redis.set(`${container.REDIS_WORLD_ROOT}/${sub}/${id}/data`, JSON.stringify(data))
+      return redis.set(`${container.REDIS_WORLD_ROOT}/${sub}/${id}/data`, JSON.stringify(data))
            .then(() => redis.set(`${container.REDIS_WORLD_ROOT}/${sub}/${id}/config`, JSON.stringify(config)))
            .then(() => id);
     }

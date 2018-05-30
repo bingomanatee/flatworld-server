@@ -11,7 +11,7 @@ router.get('/spec', homeController.showSwaggerSpec);
 router.get('/rando', randoController.rando);
 router.get('/noise/:resolution/:word/:zoom', randoController.noise);
 
-
-route.post('/api/worlds/:sub/', worldController.saveWorld)
+console.log('worldController: ', worldController);
+router.post('/api/worlds/:sub', worldController.create)
 
 module.exports = router;

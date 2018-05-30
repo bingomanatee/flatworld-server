@@ -6,8 +6,7 @@ exports.create = async (ctx) => {
   ctx.assert(params.sub, 401, 'needs user');
   let world = request.body;
   console.log('saving body, ', world);
-  modelBottle.createWorld(world, params.sub)
-    .then((worldId) => {
-      ctx.body = JSON.stringify({worldId});
-    });
+  let worldId = await modelBottle.container.createWorld(world, params.sub)
+  ctx.body = JSON.stringify({worldId});
+  console.log('returning body: ', ctx.body);
 }
