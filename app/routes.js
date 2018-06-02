@@ -12,6 +12,7 @@ router.get('/rando', randoController.rando);
 router.get('/noise/:resolution/:word/:zoom', randoController.noise);
 
 console.log('worldController: ', worldController);
-router.post('/api/worlds/:sub', worldController.create)
+router.get('/api/worlds/:sub', worldController.list);
+router.post('/api/worlds/:sub', worldController.create);
 
 module.exports = router;
