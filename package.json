@@ -27,7 +27,7 @@
     "start": "node app",
     "dev": "NODE_ENV=development nodemon --quiet | bunyan",
     "test": "NODE_ENV=test jest --forceExit --verbose",
-    "test:unit": "npm test -- test/unit",
+    "test:unit": "./node_modules/.bin/tap app/**/__tests__/*.test.js",
     "test:integration": "npm test -- test/integration",
     "test:watch": "npm test -- --watch",
     "test:watch:unit": "npm run test:unit -- --watch",
@@ -48,6 +48,7 @@
     "elastic-apm-node": "^1.2.1",
     "fabric": "^2.2.3",
     "ioredis": "^3.2.2",
+    "is": "^3.2.1",
     "kcors": "^2.2.1",
     "kd-tree-javascript": "^1.0.3",
     "koa": "^2.5.0",
@@ -58,21 +59,21 @@
     "object-recursive-iterator": "^1.0.2",
     "simplex-noise": "^2.4.0",
     "swagger-jsdoc": "^1.9.7",
+    "tap-cli": "^0.0.1",
     "three": "^0.92.0",
     "tinycolor2": "^1.4.1",
     "tinygradient": "^0.4.0",
     "uuid": "^3.2.1",
-    "validator": "^10.2.0",
     "wordnik": "0.0.2"
   },
   "devDependencies": {
     "coveralls": "^3.0.0",
     "eslint": "^4.19.1",
     "eslint-config-omnious": "^0.4.0",
-    "jest": "^22.4.3",
     "jest-junit": "^4.0.0",
     "nodemon": "^1.17.2",
-    "supertest": "^3.0.0"
+    "supertest": "^3.0.0",
+    "tap": "^12.0.1"
   },
   "jest": {
     "testEnvironment": "node"

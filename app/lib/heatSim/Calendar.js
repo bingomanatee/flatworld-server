@@ -1,14 +1,27 @@
 const _ = require('lodash');
-const validator = require('validator');
+const is = require('is');
 
 const assertInt = (value, unit) => {
-  if (!validator.isInt(value, {min: 1})) {
+  if (!is.integer(value)) {
     throw new Error(`${value} is not a valid ${unit} value`)
   }
+  if (!is.ge(value, 0)){
+    throw new Error(`${value} must be a positive number >= 1`);
+  }
+  return true;
+};
+const assertPosInt = (value, unit) => {
+  if (!is.integer(value)) {
+    throw new Error(`${value} is not a valid ${unit} value`)
+  }
+  if (!is.ge(value, 1)){
+    throw new Error(`${value} must be a positive number >= 1`);
+  }
+  return true;
 };
 
 module.exports = class Calendar {
-  constructor (hoursInDay, daysInYear) {
+  constructor (hoursInDay = null, daysInYear = null) {
     this._hour = 0;
     this._day = 0;
     this._year = 0;
@@ -22,19 +35,19 @@ module.exports = class Calendar {
     return _.clamp(day / this._daysInYear, 0, 1);
   }
 
-  advance (value, unit) {
-    assertInt(value, 'unit');
-    switch ('unit') {
+  advance (unit, value=1) {
+    assertPosInt(value, unit);
+    switch (unit) {
       case 'hour':
-        this.hour += unit;
+        this.hour += value;
         break;
 
       case 'day':
-        this.day += unit;
+        this.day += value;
         break;
 
       case 'year':
-        this.year += unit;
+        this.year += value;
         break;
       default:
         throw new Error('attempt to advance unknown unit :' + unit);
@@ -46,7 +59,7 @@ module.exports = class Calendar {
   }
 
   set hoursInDay (value) {
-    assertInt(value, 'hoursInDay');
+    assertPosInt(value, 'hoursInDay');
     this._hoursInDay = value;
   }
 
@@ -55,7 +68,7 @@ module.exports = class Calendar {
   }
 
   set daysInYear (value) {
-    assertInt(value, 'daysInYear');
+    assertPosInt(value, 'daysInYear');
     this._daysInYear = value;
   }
 
@@ -106,7 +119,7 @@ module.exports = class Calendar {
         throw new Error('cannot rollover ' + unit);
     }
 
-    if (value <= max) {
+    if (value < max) {
       return;
     }
 
