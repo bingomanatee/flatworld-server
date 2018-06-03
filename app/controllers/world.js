@@ -11,7 +11,7 @@ exports.create = async (ctx) => {
 exports.list = async(ctx) => {
   const {modelBottle, params} = ctx;
   ctx.assert(params.sub, 401, 'needs user');
-  let list = await modelBottle.container.getWorlds(params.sub);
+  let list = await modelBottle.container.getWorlds({sub: params.sub});
   console.log('list: ', require('util').inspect(list));
   ctx.body = list;
 }
