@@ -1,17 +1,19 @@
-const THREE = require('three');
 const Calendar = require('./Calendar');
+const Planet = require('./Planet');
+const SolarSystem = require('./SolarSystem');
+
 module.exports = (bottle) => {
 
-  bottle.factory('Calendar', () => Calendar);
+  bottle.constant('Calendar', Calendar);
+  bottle.constant('Planet', Planet);
+
+  SolarSystem(bottle);
 
   bottle.factory('initSim', (container) => {
     return (id) => container.getWorld(id)
-                            .then((world) => {
-
-                            });
-
+                            .then((config) =>
+                              new SolarSystem(config));
   });
-
 
   return bottle;
 };

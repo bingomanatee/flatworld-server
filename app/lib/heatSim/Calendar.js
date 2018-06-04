@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const is = require('is');
 
-const assertInt = (value, unit) => {
+const assertWhole = (value, unit) => {
   if (!is.integer(value)) {
     throw new Error(`${value} is not a valid ${unit} value`)
   }
@@ -77,7 +77,7 @@ module.exports = class Calendar {
   }
 
   set hour (value) {
-    assertInt(value, 'hour');
+    assertWhole(value, 'hour');
     this._hour = value;
     this.rollover('hour');
   }
@@ -87,7 +87,7 @@ module.exports = class Calendar {
   }
 
   set day (value) {
-    assertInt(value, 'day');
+    assertWhole(value, 'day');
     this._day = value;
     this.rollover('day');
   }
@@ -97,7 +97,7 @@ module.exports = class Calendar {
   }
 
   set year (value) {
-    assertInt(value, 'year');
+    assertWhole(value, 'year');
     this._year = value;
   }
 
@@ -136,6 +136,31 @@ module.exports = class Calendar {
         this.year += nextValue;
         this.day = newValue;
         break;
+    }
+  }
+  reset () {
+    this.hour = 0;
+    this.day = 0;
+    this.year = 0;
+  }
+
+  get days () {
+    return this.day + this.year * this.daysInYear + (this.hour / this.hoursInDay);
+  }
+
+  get hours() {
+    return this.day * this.hoursInDay + this.hour + (this.year * (this.hoursInDay * this.daysInYear));
+  }
+
+  toArray () {
+    return [this.hour, this.day, this.year];
+  }
+
+  toJSON (asArray = false) {
+    return asArray ? toArray() : {
+      hour: this.hour,
+      day: this.day,
+      year: this.year,
     }
   }
 }

@@ -1,6 +1,7 @@
 'use strict';
-const heatSim = require('../index')
+const heatSim = require('../index');
 const tap = require('tap');
+const {almostEqual} = require('./utils');
 
 function CalendarFactory () {
   const bottle = heatSim();
@@ -111,6 +112,23 @@ tap.test('Calendar', (suite) => {
     });
 
     pTest.end();
+  });
+
+  suite.test('percentOfYear', (poyTest) => {
+    const Calendar = CalendarFactory();
+    let cal = new Calendar(20, 100);
+
+    poyTest.equal(cal.percentOfYear, 0, 'poy starts at zero');
+    cal.hour = 1;
+    poyTest.ok(almostEqual(cal.percentOfYear, 1/(20 * 100)), 'hours affect poy');
+    cal.reset();
+    cal.day = 50;
+    poyTest.equal(cal.percentOfYear, 0.5, 'poy half year');
+    cal.reset();
+    cal.day = 99;
+    cal.hour = 19;
+    poyTest.ok(almostEqual(cal.percentOfYear, 1), 'end of year');
+    poyTest.end();
   });
 
   suite.end();
